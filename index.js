@@ -43,13 +43,6 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (req.method === "GET") {
-   
-    if (url === "/favicon.ico") {
-      res.writeHead(204); 
-      res.end();
-      return;
-    }
-
     const statusCode = url.slice(1); 
     const filePath = path.join(cache, `${statusCode}.jpeg`); 
 
