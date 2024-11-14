@@ -94,6 +94,7 @@ const server = http.createServer(async (req, res) => {
         } catch (error) {
             res.writeHead(500, { "Content-Type": "text/plain" });
             res.end("Server error");
+            console.log("error")
         }
     });
 } else if (req.method === "DELETE") {
