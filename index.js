@@ -15,7 +15,6 @@ const host = options.host;
 const port = options.port;
 const cache = options.cache;
 
-// Validate required options
 if (!host) {
   console.error("Please specify the server address (host).");
   process.exit(1);
@@ -29,12 +28,12 @@ if (!cache) {
   process.exit(1);
 }
 
-// Ensure cache directory exists
+
 if (!fs.existsSync(cache)) {
   fs.mkdirSync(cache, { recursive: true });
 }
 
-// Create HTTP server
+
 const server = http.createServer(async (req, res) => {
   const url = req.url;
   if (url === "/") {
@@ -44,18 +43,17 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (req.method === "GET") {
-    // Ignore favicon requests
+   
     if (url === "/favicon.ico") {
-      res.writeHead(204); // 204 No Content
+      res.writeHead(204); 
       res.end();
       return;
     }
 
-    const statusCode = url.slice(1); // Extract status code from URL
-    const filePath = path.join(cache, `${statusCode}.jpeg`); // Define cache path
+    const statusCode = url.slice(1); 
+    const filePath = path.join(cache, `${statusCode}.jpeg`); 
 
     if (fs.existsSync(filePath)) {
-      // Serve cached image
       try {
         const data = await fs.promises.readFile(filePath);
         res.setHeader("Content-Type", "image/jpeg");
@@ -66,12 +64,12 @@ const server = http.createServer(async (req, res) => {
         res.end("Error reading file");
       }
     } else {
-      // Fetch from http.cat if not in cache and then serve it
+     
       try {
         const response = await superagent.get(`https://http.cat/${statusCode}`);
         const data = response.body;
 
-        await fs.promises.writeFile(filePath, data); // Cache the image
+        await fs.promises.writeFile(filePath, data); 
         res.setHeader("Content-Type", "image/jpeg");
         res.writeHead(200);
         res.end(data);
@@ -99,12 +97,11 @@ const server = http.createServer(async (req, res) => {
         }
     });
 } else if (req.method === "DELETE") {
-  const filePath = path.join(cache, `${url.slice(1)}.jpeg`); // Визначаємо шлях до файлу в кеші
-
+  const filePath = path.join(cache, `${url.slice(1)}.jpeg`); 
   try {
-      // Перевіряємо наявність файлу в кеші
+      
       if (fs.existsSync(filePath)) {
-          await fs.promises.unlink(filePath); // Видаляємо файл
+          await fs.promises.unlink(filePath); 
           res.writeHead(200, { "Content-Type": "text/plain" });
           res.end("File deleted successfully");
       } else {
@@ -117,13 +114,12 @@ const server = http.createServer(async (req, res) => {
   }
 }
   else {
-    // Handle unsupported methods
+   
     res.writeHead(405, { "Content-Type": "text/plain" });
     res.end("Method not allowed");
   }
 });
 
-// Start server
 server.listen(port, host, () => {
   console.log(`Server running at http://${host}:${port}`);
 });
